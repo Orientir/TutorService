@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import dj_database_url
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -26,9 +27,15 @@ SECRET_KEY = 'edq&3=!um=s(9a%0o8)(5b7_uyl%9-$1gp*@4dv9m4=#ry29w0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 ALLOWED_HOSTS = []
 
 ROOT_URLCONF = "TutorService.urls"
+
+AUTH_USER_MODEL = "account.User"
+
+LOGIN_REDIRECT_URL = "home"
 
 # Application definition
 
@@ -39,6 +46,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Local apps
+    'TutorService.account',
+    'TutorService.core',
+    'TutorService.offer',
+    # External apps
+    'phonenumber_field',
+    'captcha',
+    'bootstrap4',
+    'versatileimagefield',
 ]
 
 MIDDLEWARE = [
@@ -60,10 +76,6 @@ context_processors = [
     "django.template.context_processors.tz",
     "django.contrib.messages.context_processors.messages",
     "django.template.context_processors.request",
-    "saleor.core.context_processors.default_currency",
-    "saleor.checkout.context_processors.checkout_counter",
-    "saleor.core.context_processors.search_enabled",
-    "saleor.site.context_processors.site",
     "social_django.context_processors.backends",
     "social_django.context_processors.login_redirect",
 ]
@@ -96,10 +108,9 @@ WSGI_APPLICATION = 'TutorService.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    "default": dj_database_url.config(
+        default="postgres://user_tutor:password_tutor@localhost:5432/dbs_tutor", conn_max_age=600
+    )
 }
 
 
@@ -121,6 +132,31 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+# CELERY SETTINGS
+CELERY_BROKER_URL = (
+    os.environ.get("CELERY_BROKER_URL", os.environ.get("CLOUDAMQP_URL")) or ""
+)
+CELERY_TASK_ALWAYS_EAGER = not CELERY_BROKER_URL
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", None)
+
+
+NOCAPTCHA = True
+
+# Set Google's reCaptcha keys
+RECAPTCHA_PUBLIC_KEY = os.environ.get("RECAPTCHA_PUBLIC_KEY")
+RECAPTCHA_PRIVATE_KEY = os.environ.get("RECAPTCHA_PRIVATE_KEY")
+
+
+bootstrap4 = {
+    "set_placeholder": False,
+    "set_required": False,
+    "success_css_class": "",
+    "form_renderers": {"default": "TutorService.core.utils.form_renderer.FormRenderer"},
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

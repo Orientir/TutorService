@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Log in" context "Login page title" %} — {{ block.super }}{% endblock %}
+
+
+{% block content %}
+    <div class="col-lg-10 col-sm-12 m-auto">
+        <div class="row login">
+            <div class="col-md-4 m-auto login__form">
+                <h3>{% trans "Log in" context "Login form title" %}</h3>
+                {% include "account/partials/login_form.html" %}
+                <span><a rel="nofollow" href="{% url 'account:signup' %}" class="btn secondary narrow">
+                    {% trans "Register" context "Login form secondary action" %}
+                </a></span>
+            </div>
+        </div>
+    </div>
+{% endblock %}

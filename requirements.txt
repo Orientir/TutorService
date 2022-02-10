@@ -1,2 +1,14 @@
 -i https://pypi.python.org/simple
 django==3.2.12
+phonenumberslite==8.10.17
+django-phonenumber-field==2.4.0
+django-versatileimagefield==2.2
+captcha==0.3
+django-bootstrap4==21.2
+libmagic==1.0
+django-templated-email==3.0.0
+dj-database-url==0.5.0
+celery[redis]==4.3.0
+psycopg2-binary==2.8.3
+python-magic-bin==0.4.14
+social-auth-app-django=5.0.0
