@@ -35,14 +35,11 @@ class UserManager(BaseUserManager):
         if password:
             user.set_password(password)
         user.save()
-        print('*********')
-        print(user)
-        print('*********')
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
         return self.create_user(
-            email, password, is_teacher=True, is_superuser=True, **extra_fields
+            email, password, is_superuser=True, **extra_fields
         )
 
     def students(self):

@@ -44,7 +44,7 @@ class LoginForm(django_forms.AuthenticationForm, FormWithReCaptcha):
                 self.fields["username"].initial = email
 
 
-class SignupForm(forms.ModelForm, FormWithReCaptcha):
+class SignupForm(forms.ModelForm):
     password = forms.CharField(
         widget=forms.PasswordInput, label=pgettext("Password", "Password")
     )
@@ -59,7 +59,7 @@ class SignupForm(forms.ModelForm, FormWithReCaptcha):
 
     class Meta:
         model = User
-        fields = ("email",)
+        fields = ("email", )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -71,7 +71,9 @@ class SignupForm(forms.ModelForm, FormWithReCaptcha):
     def save(self, request=None, commit=True):
         user = super().save(commit=False)
         password = self.cleaned_data["password"]
+        email = self.cleaned_data["email"]
         user.set_password(password)
+        user.email = email
         if commit:
             user.save()
             account_events.user_account_created_event(user=user)

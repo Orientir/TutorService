@@ -40,13 +40,11 @@ def password_reset(request):
 def signup(request):
     form = SignupForm(request.POST or None)
     if form.is_valid():
-        print('valid')
         form.save()
         password = form.cleaned_data.get("password")
         email = form.cleaned_data.get("email")
         user = auth.authenticate(request=request, email=email, password=password)
         if user:
-            print('user')
             auth.login(request, user)
         messages.success(request, _("User has been created"))
         redirect_url = request.POST.get("next", settings.LOGIN_REDIRECT_URL)
